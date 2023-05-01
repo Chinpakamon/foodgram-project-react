@@ -1,17 +1,21 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-$n%8qq167*uxj-*yztnjy#x69qin53^9q+**y!)s%%1*60!nc7'
+SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-$n%8qq167*uxj-*yztnjy#x69qin53^9q+**y!)s%%1*60!nc7')
 
 DEBUG = True
 
 ALLOWED_HOSTS = ['158.160.39.177',
                  '127.0.0.1',
                  'localhost',
+                 '0.0.0.0',
                  '*'
-]
+                 ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,21 +63,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-#         'NAME': os.getenv('DB_NAME', default='postgres'),
-#         'USER': os.getenv('POSTGRES_USER', default='postgres'),
-#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
-#         'HOST': os.getenv('DB_HOST', default='db'),
-#         'PORT': os.getenv('DB_PORT', default='5432')
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', default='postgres'),
+        'USER': os.getenv('POSTGRES_USER', default='postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
+        'HOST': os.getenv('DB_HOST', default='db'),
+        'PORT': os.getenv('DB_PORT', default=5432),
     }
 }
 
@@ -120,7 +117,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_FILTER_BACKENDS': [
-        "django_filters.rest_framework.DjangoFilterBackend"
+        'django_filters.rest_framework.DjangoFilterBackend'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 6,
@@ -131,10 +128,11 @@ DJOSER = {
     'PERMISSIONS': {
         'user_list': ['rest_framework.permissions.AllowAny'],
         'user': ['rest_framework.permissions.IsAuthenticated'],
+
     },
-    # 'SERIALIZERS': {
-    #     'user_create': 'users.api.serializers.UserRegistrationSerializer',
-    #     'user': 'users.api.serializers.UserDetailSerializer',
-    #     'current_user': 'users.api.serializers.UserDetailSerializer',
-    # }
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.CreateUserSerializer',
+        'user': 'users.serializers.UserListSerializer',
+        'current_user': 'users.serializers.UserListSerializer',
+    },
 }

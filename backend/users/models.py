@@ -26,7 +26,7 @@ class User(AbstractUser):
         return self.username
 
 
-class Subscriptions(models.Model):
+class Subscription(models.Model):
     author = models.ForeignKey(User, verbose_name='Автор', related_name='author', on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name='Подписчик', related_name='follower', on_delete=models.CASCADE)
 

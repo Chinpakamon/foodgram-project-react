@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class Ingredients(models.Model):
+class Ingredient(models.Model):
     name = models.CharField('Название ингредиента', max_length=200)
     measurement_unit = models.CharField('Единица измерения', max_length=200)
 
@@ -30,13 +30,13 @@ class Tag(models.Model):
         return self.name
 
 
-class Recipes(models.Model):
+class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор публикации',
                                related_name='recipe_author')
     name = models.CharField('Название', max_length=200)
     image = models.ImageField('Картинка', )
     text = models.TextField('Текстовое описание', )
-    ingredients = models.ManyToManyField(Ingredients, verbose_name='Ингредиенты', )
+    ingredients = models.ManyToManyField(Ingredient, verbose_name='Ингредиенты', )
     tag = models.ManyToManyField(Tag, verbose_name='Тег')
     cooking_time = models.PositiveIntegerField(verbose_name='Время приготовления в минутах',
                                                validators=[MinValueValidator(1)])
@@ -53,7 +53,7 @@ class Recipes(models.Model):
 class ShoppingCart(models.Model):
     user = models.ForeignKey(User, verbose_name='Пользователь', related_name='is_in_shopping_cart',
                              on_delete=models.CASCADE)
-    recipes = models.ForeignKey(Recipes, verbose_name='Рецепт', related_name='is_in_shopping_cart',
+    recipes = models.ForeignKey(Recipe, verbose_name='Рецепт', related_name='is_in_shopping_cart',
                                 on_delete=models.CASCADE)
 
     class Meta:
@@ -71,7 +71,7 @@ class ShoppingCart(models.Model):
 
 
 class Favorite(models.Model):
-    recipes = models.ForeignKey(Recipes, verbose_name='Избранный рецепт', related_name='is_favorited',
+    recipes = models.ForeignKey(Recipe, verbose_name='Избранный рецепт', related_name='is_favorited',
                                 on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name='Пользователь', related_name='is_favorited', on_delete=models.CASCADE)
 
@@ -89,11 +89,11 @@ class Favorite(models.Model):
         return f'Пользователь {self.user} добавил {self.recipes} в избранное'
 
 
-class IngredientsQuantity(models.Model):
-    recipes = models.ForeignKey(Recipes, verbose_name='Рецепт', related_name='recipes', on_delete=models.CASCADE)
+class IngredientQuantity(models.Model):
+    recipes = models.ForeignKey(Recipe, verbose_name='Рецепт', related_name='recipes', on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(verbose_name='Количество ингредиента',
                                                 validators=[MinValueValidator(1)])
-    ingredients = models.ForeignKey(Ingredients, verbose_name='Ингридиент', related_name='ingredients',
+    ingredients = models.ForeignKey(Ingredient, verbose_name='Ингридиент', related_name='ingredients',
                                     on_delete=models.CASCADE)
 
     class Meta:
