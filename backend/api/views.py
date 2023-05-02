@@ -1,6 +1,6 @@
 from django.utils import timezone
-
 from django.http import HttpResponse
+from django.db.models import Sum
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.views import APIView
@@ -67,7 +67,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         self.perform_destroy(data)
         return Response({"message": "You deleted the recipe"}, status=status.HTTP_204_NO_CONTENT)
 
-    def post_delet(self, request, pk, model, serializer):
+    def post_delete(self, request, pk, model, serializer):
         if self.request.method == 'POST':
             recipes = get_object_or_404(Recipe, pk=pk)
             if model.objects.filter(user=request.user, recipes=recipes).exists():
@@ -85,40 +85,38 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def is_favorited(self, request, pk):
         model = Favorite
         serializer = RecipeSubscribeSerializer
-        return self.post_delet(request, pk, model, serializer)
+        return self.post_delete(request, pk, model, serializer)
 
     @action(detail=True, methods=['POST', 'DELETE'])
     def shopping_cart(self, request, pk):
         model = ShoppingCart
         serializer = RecipeSubscribeSerializer
-        return self.post_delet(request, pk, model, serializer)
+        return self.post_delete(request, pk, model, serializer)
 
 
 class ShoppingCartView(APIView):
-    @action(methods=['GET'], detail=False, url_path='download_shopping_cart')
+    @action(methods=['GET'], detail=False, url_path='download_shopping_cart',
+            permission_classes=[permissions.IsAuthenticated])
     def get(self, request):
+        ingredients = IngredientQuantity.objects.filter(
+            cart_user=self.request.user).values('ingredient__name', 'ingredient__measurement_unit').ordered_by(
+            'ingredient_name').annotate(quantity=Sum('quantity'))
         user = get_object_or_404(User, username=request.user)
-        shopping_list = ShoppingCart.objects.filter(user=user).values('recipes')
-        recipes = Recipe.objects.filter(pk__in=shopping_list)
-        shop_list: dict = {}
-        n_rec = 0
-        for recipe in recipes:
-            n_rec += 1
-            ing_quantity = IngredientQuantity.objects.filter(recipes=recipe)
-            for i in ing_quantity:
-                if i.ingredients.name in shop_list:
-                    shop_list[i.ingredients.name][0] += i.quantity
-                else:
-                    shop_list[i.ingredients.name] = [i.quantity, i.ingredients.measurement_unit]
+        filename = f'{user.username}_shopping_list.txt'
         now = timezone.now()
-        now = now.strftime("%d-%m-%Y")
-        shop_string = (
-            f'FoodGram\nВыбрано рецептов: {n_rec}\
-                    \n-------------------\n{now}\
-                    \nСписок покупок:\
-                    \n-------------------'
+        shopping_list = (
+            f'Список покупок для пользователя: {user.username}\n\n'
+            f'Дата: {now:%Y-%m-%d}\n\n'
         )
-
-        for key, value in shop_list.items():
-            shop_string += f'\n{key} ({value[1]}) - {str(value[0])}'
-        return HttpResponse(shop_string, content_type='text/plain')
+        shopping_list += '\n'.join([
+            f'- {ingredient["ingredient__name"]} '
+            f'({ingredient["ingredient__measurement_unit"]})'
+            f' - {ingredient["quantity"]}'
+            for ingredient in ingredients
+        ])
+        shopping_list += f'\n\nFoodgram ({now:%Y})'
+        response = HttpResponse(
+            shopping_list, content_type='text.txt; charset=utf-8'
+        )
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        return response
