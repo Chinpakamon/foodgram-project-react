@@ -1,12 +1,14 @@
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-$n%8qq167*uxj-*yztnjy#x69qin53^9q+**y!)s%%1*60!nc7')
+SECRET_KEY = os.getenv('SECRET_KEY',
+                       default='django-insecure-$n%8qq167*uxj-*yztnjy#x69qin53^9q+**y!)s%%1*60!nc7')
 
 DEBUG = True
 
@@ -65,7 +67,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'ENGINE': os.getenv('DB_ENGINE',
+                            default='django.db.backends.postgresql'),
         'NAME': os.getenv('DB_NAME', default='postgres'),
         'USER': os.getenv('POSTGRES_USER', default='postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),

@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Tag, Recipe, Ingredient, ShoppingCart, Favorite, IngredientQuantity
+from .models import (Favorite, Ingredient, IngredientQuantity, Recipe,
+                     ShoppingCart, Tag)
 
 
 class TagAdmin(admin.ModelAdmin):
@@ -18,7 +19,9 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name', 'author', 'text', 'cooking_time', 'pub_date', 'count_favor')
+    list_display = (
+        'pk', 'name', 'author', 'text', 'cooking_time', 'pub_date',
+        'count_favor')
     list_filter = ('author', 'name', 'tag')
     search_fields = ('author', 'name', 'tag', 'ingredients', 'cooking_time')
     empty_value_display = '-пусто-'

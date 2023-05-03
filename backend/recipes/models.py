@@ -1,6 +1,6 @@
-from django.db import models
-from django.core.validators import MinValueValidator
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
+from django.db import models
 
 User = get_user_model()
 
@@ -31,16 +31,20 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор публикации',
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               verbose_name='Автор публикации',
                                related_name='recipe_author')
     name = models.CharField('Название', max_length=200)
     image = models.ImageField('Картинка', )
     text = models.TextField('Текстовое описание', )
-    ingredients = models.ManyToManyField(Ingredient, verbose_name='Ингредиенты', )
+    ingredients = models.ManyToManyField(Ingredient,
+                                         verbose_name='Ингредиенты', )
     tag = models.ManyToManyField(Tag, verbose_name='Тег')
-    cooking_time = models.PositiveIntegerField(verbose_name='Время приготовления в минутах',
-                                               validators=[MinValueValidator(1)])
-    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True, db_index=True)
+    cooking_time = models.PositiveIntegerField(
+        verbose_name='Время приготовления в минутах',
+        validators=[MinValueValidator(1)])
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True,
+                                    db_index=True)
 
     class Meta:
         ordering = ['-pub_date', ]
@@ -51,9 +55,11 @@ class Recipe(models.Model):
 
 
 class ShoppingCart(models.Model):
-    user = models.ForeignKey(User, verbose_name='Пользователь', related_name='is_in_shopping_cart',
+    user = models.ForeignKey(User, verbose_name='Пользователь',
+                             related_name='is_in_shopping_cart',
                              on_delete=models.CASCADE)
-    recipes = models.ForeignKey(Recipe, verbose_name='Рецепт', related_name='is_in_shopping_cart',
+    recipes = models.ForeignKey(Recipe, verbose_name='Рецепт',
+                                related_name='is_in_shopping_cart',
                                 on_delete=models.CASCADE)
 
     class Meta:
@@ -71,9 +77,12 @@ class ShoppingCart(models.Model):
 
 
 class Favorite(models.Model):
-    recipes = models.ForeignKey(Recipe, verbose_name='Избранный рецепт', related_name='is_favorited',
+    recipes = models.ForeignKey(Recipe, verbose_name='Избранный рецепт',
+                                related_name='is_favorited',
                                 on_delete=models.CASCADE)
-    user = models.ForeignKey(User, verbose_name='Пользователь', related_name='is_favorited', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='Пользователь',
+                             related_name='is_favorited',
+                             on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['id', ]
@@ -90,10 +99,14 @@ class Favorite(models.Model):
 
 
 class IngredientQuantity(models.Model):
-    recipes = models.ForeignKey(Recipe, verbose_name='Рецепт', related_name='recipes', on_delete=models.CASCADE)
-    quantity = models.PositiveSmallIntegerField(verbose_name='Количество ингредиента',
-                                                validators=[MinValueValidator(1)])
-    ingredients = models.ForeignKey(Ingredient, verbose_name='Ингридиент', related_name='ingredients',
+    recipes = models.ForeignKey(Recipe, verbose_name='Рецепт',
+                                related_name='recipes',
+                                on_delete=models.CASCADE)
+    quantity = models.PositiveSmallIntegerField(
+        verbose_name='Количество ингредиента',
+        validators=[MinValueValidator(1)])
+    ingredients = models.ForeignKey(Ingredient, verbose_name='Ингридиент',
+                                    related_name='ingredients',
                                     on_delete=models.CASCADE)
 
     class Meta:
