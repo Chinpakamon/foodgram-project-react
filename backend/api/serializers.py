@@ -28,10 +28,10 @@ class GetIngredientSerializer(serializers.ModelSerializer):
                                             slug_field='pk')
     name = serializers.SlugRelatedField(read_only=True, source='ingredients',
                                         slug_field='name')
-    measurement_unit = serializers.SlugRelatedField(read_only=True,
-                                                    source='ingredients',
-                                                    slug_field=
-                                                    'measurement_unit')
+    measurement_unit = serializers.SlugRelatedField(
+        read_only=True,
+        source='ingredients',
+        slug_field='measurement_unit')
 
     class Meta:
         model = IngredientQuantity
@@ -111,11 +111,13 @@ class GetRecipeSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if user.is_authenticated:
             return obj.is_favorited.filter(user=user).exists()
+        return False
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
             return obj.is_in_shopping_cart.filter(user=user).exists()
+        return False
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -155,7 +157,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 recipes_id=instance.id)
             quantity.delete()
             self.create_update(ingredients_data, IngredientQuantity, instance)
-            return super().update(instance, validated_data)
+        return super().update(instance, validated_data)
 
     def represent(self, instance):
         self.fields.pop('ingredients')

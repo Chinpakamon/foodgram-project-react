@@ -110,7 +110,8 @@ class ShoppingCartView(APIView):
     def get(self, request):
         ingredients = IngredientQuantity.objects.filter(
             cart_user=self.request.user).values('ingredient__name',
-                                                'ingredient__measurement_unit').ordered_by(
+                                                'ingredient__measurement_unit'
+                                                ).ordered_by(
             'ingredient_name').annotate(amount=Sum('quantity'))
         user = get_object_or_404(User, username=request.user)
         filename = f'{user.username}_shopping_list.txt'
