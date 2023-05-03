@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-from drf_extra_fields.fields import Base64ImageField
 
+from recipes.models import Ingredient, IngredientQuantity, Recipe, Tag
 from users.models import Subscription
 from users.serializers import UserListSerializer
-from recipes.models import Tag, Recipe, Ingredient, IngredientQuantity
 
 User = get_user_model()
 
@@ -30,7 +30,8 @@ class GetIngredientSerializer(serializers.ModelSerializer):
                                         slug_field='name')
     measurement_unit = serializers.SlugRelatedField(read_only=True,
                                                     source='ingredients',
-                                                    slug_field='measurement_unit')
+                                                    slug_field=
+                                                    'measurement_unit')
 
     class Meta:
         model = IngredientQuantity
@@ -73,8 +74,9 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = (
-        'id', 'email', 'username', 'first_name', 'last_name', 'is_subscribed',
-        'recipes', 'recipes_count')
+            'id', 'email', 'username', 'first_name', 'last_name',
+            'is_subscribed',
+            'recipes', 'recipes_count')
 
     def get_is_subscribed(self, obj):
         return Subscription.objects.filter(user=obj.user,
@@ -127,8 +129,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
-        'pk', 'author', 'tags', 'ingredients', 'image', 'name', 'text',
-        'cooking_time')
+            'pk', 'author', 'tags', 'ingredients', 'image', 'name', 'text',
+            'cooking_time')
 
     def create_update(self, data, model, recipe):
         create_data = (model(recipes=recipe, ingredients=data['ingredients'],

@@ -10,7 +10,14 @@ User = get_user_model()
 class CreateUserSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
-        fields = ('pk', 'email', 'username', 'first_name', 'last_name', 'password')
+        fields = (
+            'pk',
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'password'
+        )
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -18,7 +25,14 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', 'email', 'username', 'first_name', 'last_name', 'is_subscribed')
+        fields = (
+            'pk',
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed'
+        )
 
     def get_subscribed(self, obj):
         user = self.context['request'].user

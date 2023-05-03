@@ -20,11 +20,11 @@ services:
       - ./.env
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: chinpakamon/diplom_front:v03.05.2023
     volumes:
       - ../frontend/:/app/result_build/
+    depends_on:
+      - backend
 
 
   nginx:

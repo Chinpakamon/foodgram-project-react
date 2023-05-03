@@ -1,10 +1,11 @@
 from django.contrib import admin
 
-from .models import User, Subscription
+from .models import Subscription, User
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'username', 'email', 'first_name', 'last_name', 'password')
+    list_display = (
+    'pk', 'username', 'email', 'first_name', 'last_name', 'password')
     search_fields = ('username', 'first_name', 'last_name')
     list_filter = ('email', 'first_name')
     empty_value_display = '-пусто-'

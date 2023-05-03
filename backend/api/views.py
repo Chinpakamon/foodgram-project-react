@@ -1,23 +1,24 @@
-from django.utils import timezone
-from django.http import HttpResponse
 from django.db.models import Sum
-from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import action
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.generics import get_object_or_404
+from django.http import HttpResponse
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from recipes.models import Tag, Recipe, Ingredient, ShoppingCart, Favorite, \
-    IngredientQuantity
+from recipes.models import (Favorite, Ingredient, IngredientQuantity, Recipe,
+                            ShoppingCart, Tag)
 from users.models import User
-from .pagination import CustomPagination
-from .mixins import ViewSetMixin
-from .permissions import IsAuthorOrReadOnly
+
 from .filters import IngredientsFilter, RecipesFilter
-from .serializers import (TagSerializer, RecipeSerializer,
-                          IngredientSerializer, RecipeSubscribeSerializer,
-                          GetRecipeSerializer)
+from .mixins import ViewSetMixin
+from .pagination import CustomPagination
+from .permissions import IsAuthorOrReadOnly
+from .serializers import (GetRecipeSerializer, IngredientSerializer,
+                          RecipeSerializer, RecipeSubscribeSerializer,
+                          TagSerializer)
 
 
 class TagViewSet(ViewSetMixin):
