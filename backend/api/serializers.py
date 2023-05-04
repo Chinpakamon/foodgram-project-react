@@ -23,15 +23,11 @@ class IngredientSerializer(serializers.Serializer):
 
 
 class GetIngredientSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(read_only=True,
-                                            source='ingredients',
-                                            slug_field='pk')
-    name = serializers.SlugRelatedField(read_only=True, source='ingredients',
-                                        slug_field='name')
-    measurement_unit = serializers.SlugRelatedField(
-        read_only=True,
-        source='ingredients',
-        slug_field='measurement_unit')
+    id = serializers.ReadOnlyField(source='ingredient.id')
+    name = serializers.ReadOnlyField(source='ingredient.name')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit'
+    )
 
     class Meta:
         model = IngredientQuantity
