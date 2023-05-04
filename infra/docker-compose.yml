@@ -2,7 +2,6 @@ version: '3.3'
 services:
   db:
     image: postgres:13.0-alpine
-    restart: always
     volumes:
       - database:/var/lib/postgresql/data/
     env_file:
@@ -21,7 +20,6 @@ services:
 
   frontend:
     image: chinpakamon/diplom_front:v03.05.2023
-    restart: always
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
@@ -47,4 +45,3 @@ volumes:
   static_value:
   media_value:
   result_build:
-    
