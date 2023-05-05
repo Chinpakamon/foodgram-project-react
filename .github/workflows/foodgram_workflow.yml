@@ -72,10 +72,8 @@ jobs:
           script: |
             sudo docker-compose stop
             sudo docker-compose rm backend
-            sudo docker-compose rm frontend
-            sudo docker pull chinpakamon/diplom_back:v02.05.2023
-            sudo docker pull chinpakamon/diplom_front:v03.05.2023
             touch .env
+            echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
             echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
