@@ -54,7 +54,7 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: chinpakamon/diplom_back:v02.05.2023
+          tags: chinpakamon/diplom_front:v03.05.2023
 
 
   deploy:
