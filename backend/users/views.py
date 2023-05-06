@@ -13,9 +13,6 @@ User = get_user_model()
 
 
 class UserViewSet(UserViewSet):
-    queryset = User.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
     @action(detail=True, permission_classes=[permissions.IsAuthenticated],
             methods=['POST', 'DELETE'])
     def subscribe(self, request, id=None):
