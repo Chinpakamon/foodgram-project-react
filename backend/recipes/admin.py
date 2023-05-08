@@ -27,7 +27,7 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
     def count_favor(self, obj):
-        return obj.favorites.count()
+        return obj.is_favorited.count()
 
 
 class ShoppingCartAdmin(admin.ModelAdmin):

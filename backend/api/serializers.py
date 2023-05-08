@@ -115,6 +115,11 @@ class GetRecipeSerializer(serializers.ModelSerializer):
             return obj.is_in_shopping_cart.filter(user=user).exists()
         return False
 
+    def get_ingredients(self, obj):
+        recipe_ingredients = IngredientQuantity.objects.filter(recipe=obj)
+        return RecipeIngredientSerializer(recipe_ingredients,
+                                          many=True).data
+
 
 class RecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
