@@ -51,8 +51,12 @@ class Recipe(models.Model):
     class Meta:
         ordering = ['-pub_date', ]
         verbose_name = 'Рецепт'
-        constraints = [models.UniqueConstraint(fields=['author', 'name'],
-                                               name=unique_author_name)]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'name'],
+                name='unique_author_name'
+            )
+        ]
 
     def __str__(self):
         return f'Рецепт {self.name}'

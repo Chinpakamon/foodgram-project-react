@@ -22,8 +22,8 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'pk', 'name', 'author', 'text', 'cooking_time', 'pub_date',
         'count_favor')
-    list_filter = ('author', 'name', 'tag')
-    search_fields = ('author', 'name', 'tag', 'ingredients', 'cooking_time')
+    list_filter = ('author', 'name', 'tags')
+    search_fields = ('author', 'name', 'tags', 'ingredients', 'cooking_time')
     empty_value_display = '-пусто-'
 
     def count_favor(self, obj):
@@ -31,23 +31,23 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class ShoppingCartAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'user', 'recipes')
-    list_filter = ('user', 'recipes')
-    search_fields = ('user', 'recipes')
+    list_display = ('pk', 'user', 'recipe')
+    list_filter = ('user', 'recipe')
+    search_fields = ('user', 'recipe')
     empty_value_display = '-пусто-'
 
 
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'user', 'recipes')
-    list_filter = ('user', 'recipes')
-    search_fields = ('user', 'recipes')
+    list_display = ('pk', 'user', 'recipe')
+    list_filter = ('user', 'recipe')
+    search_fields = ('user', 'recipe')
     empty_value_display = '-пусто-'
 
 
 class IngredientQuantityAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'recipes', 'quantity', 'ingredients')
-    search_fields = ('recipes', 'ingredients',)
-    list_filter = ('recipes', 'ingredients',)
+    list_display = ('pk', 'recipe', 'quantity', 'ingredient')
+    search_fields = ('recipe', 'ingredient',)
+    list_filter = ('recipe', 'ingredient',)
     empty_value_display = '-пусто-'
 
 
