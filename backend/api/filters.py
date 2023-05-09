@@ -16,10 +16,10 @@ class IngredientsFilter(django_filters.FilterSet):
 
 
 class RecipesFilter(django_filters.FilterSet):
-    tag = django_filters.ModelMultipleChoiceFilter(field_name='tag',
-                                                   queryset=Tag.objects.all())
+    tags = django_filters.ModelMultipleChoiceFilter(field_name='tags__slug',
+                                                    queryset=Tag.objects.all())
     author = django_filters.ModelChoiceFilter(queryset=User.objects.all())
 
     class Meta:
         model = Recipe
-        fields = ('tag', 'author')
+        fields = ('tags', 'author')
