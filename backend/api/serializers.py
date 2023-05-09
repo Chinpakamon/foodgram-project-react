@@ -31,7 +31,7 @@ class GetIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientQuantity
-        fields = ('pk', 'name', 'measurement_unit', 'quantity')
+        fields = ('id', 'name', 'measurement_unit', 'quantity')
         validators = [
             UniqueTogetherValidator(queryset=IngredientQuantity.objects.all(),
                                     fields=['ingredient', 'recipe'])
@@ -48,7 +48,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientQuantity
-        fields = ('pk', 'recipe', 'quantity')
+        fields = ('id', 'recipe', 'quantity')
 
 
 class RecipeSubscribeSerializer(serializers.ModelSerializer):
@@ -56,7 +56,7 @@ class RecipeSubscribeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('pk', 'name', 'image', 'cooking_time')
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
@@ -99,7 +99,7 @@ class GetRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('pk', 'author', 'tags', 'ingredients', 'is_in_shopping_cart',
+        fields = ('id', 'author', 'tags', 'ingredients', 'is_in_shopping_cart',
                   'is_favorited', 'image', 'name', 'text',
                   'cooking_time')
 
@@ -132,7 +132,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
-            'pk', 'author', 'tags', 'ingredients', 'image', 'name', 'text',
+            'id', 'author', 'tags', 'ingredients', 'image', 'name', 'text',
             'cooking_time')
 
     def create_update(self, data, model, recipe):
