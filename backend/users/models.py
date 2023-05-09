@@ -16,7 +16,7 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ['id', ]
-        verbose_name = 'Пользователи'
+        verbose_name = 'Пользователь'
         constraints = [
             models.UniqueConstraint(
                 fields=['email', 'username'],
@@ -30,7 +30,7 @@ class User(AbstractUser):
 
 class Subscription(models.Model):
     author = models.ForeignKey(User, verbose_name='Автор',
-                               related_name='author', on_delete=models.CASCADE)
+                               related_name='following', on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name='Подписчик',
                              related_name='follower', on_delete=models.CASCADE)
 

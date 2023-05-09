@@ -25,7 +25,6 @@ class TagViewSet(ViewSetMixin):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (permissions.AllowAny,)
-    pagination_class = None
 
 
 class IngredientViewSet(ViewSetMixin):
@@ -33,12 +32,10 @@ class IngredientViewSet(ViewSetMixin):
     serializer_class = IngredientSerializer
     filterset_class = IngredientsFilter
     permission_classes = (permissions.AllowAny,)
-    pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
     pagination_class = CustomPagination
     filterset_class = RecipesFilter
     filter_backends = (DjangoFilterBackend,)
@@ -48,13 +45,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         is_in_shopping_cart = self.request.query_params.get(
             'is_in_shopping_cart')
         if is_favorited is not None and int(is_favorited) == 1:
-            return Recipe.objects.filter(is_favorited=self.request.user)
-        elif is_in_shopping_cart is not None and int(is_in_shopping_cart) == 1:
-            return Recipe.objects.filter(is_in_shopping_cart=self.request.user)
+            return Recipe.objects.filter(favorites__user=self.request.user)
+        if is_in_shopping_cart is not None and int(is_in_shopping_cart) == 1:
+            return Recipe.objects.filter(cart__user=self.request.user)
         return Recipe.objects.all()
 
     def get_permissions(self):
-        if self.action in ('partial_update', 'destroy'):
+        if self.action != 'create':
             return IsAuthorOrReadOnly
         return super().get_permissions()
 
@@ -74,25 +71,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def post_delete(self, request, pk, model, serializer):
         if self.request.method == 'POST':
-            recipes = get_object_or_404(Recipe, pk=pk)
+            recipe = get_object_or_404(Recipe, pk=pk)
             if model.objects.filter(user=request.user,
-                                    recipes=recipes).exists():
+                                    recipe=recipe).exists():
                 return Response(
                     {"message": "Recipe already in favorites/Shopping List"},
                     status=status.HTTP_400_BAD_REQUEST)
-            model.objects.get_or_create(user=request.user, recipes=recipes)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        recipes = get_object_or_404(Recipe, pk=pk)
-        if model.objects.filter(user=request.user, recipes=recipes).exists():
-            get_object_or_404(model, user=request.user,
-                              recipes=recipes).delete()
-            return Response({"message": "Recipe removed"},
-                            status=status.HTTP_204_NO_CONTENT)
-        return Response({"message": "Recipe not in favorites/Shopping List"},
-                        status=status.HTTP_400_BAD_REQUEST)
+            model.objects.get_or_create(user=request.user, recipe=recipe)
+            return Response(serializer(recipe).data, status=status.HTTP_201_CREATED)
+        if self.request.method == 'DELETE':
+            recipe = get_object_or_404(Recipe, pk=pk)
+            if model.objects.filter(user=request.user,
+                                    recipe=recipe).exists():
+                data = get_object_or_404(model, user=request.user,
+                                         recipe=recipe)
+                data.delete()
+                return Response({"message": "Recipe/Cart removed"},
+                                status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {"message": "Recipe not in favorites/Shopping List"},
+                status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['POST', 'DELETE'])
-    def is_favorited(self, request, pk):
+    def favorite(self, request, pk):
         model = Favorite
         serializer = RecipeSubscribeSerializer
         return self.post_delete(request, pk, model, serializer)

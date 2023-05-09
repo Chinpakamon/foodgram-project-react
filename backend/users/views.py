@@ -26,22 +26,21 @@ class UserViewSet(UserViewSet):
             if sub.exists():
                 return Response({"message": "You are already subscribed"},
                                 status=status.HTTP_400_BAD_REQUEST)
-            else:
-                serializer = SubscriptionSerializer(
-                    Subscription.objects.create(user=user, author=author),
-                    context={'request': request})
-                return Response({"message": "You are now subscribed"},
-                                serializer.data,
-                                status=status.HTTP_201_CREATED)
+            serializer = SubscriptionSerializer(
+                Subscription.objects.create(user=user, author=author),
+                context={'request': request})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         if Subscription.objects.filter(user=user, author=author).exists():
-            subscribe = get_object_or_404(SubscriptionSerializer, user=user,
+            subscribe = get_object_or_404(Subscription, user=user,
                                           author=author)
             subscribe.delete()
             return Response({"message": "You unsubscribed"},
                             status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({"message": "You are not subscribed"},
-                            status=status.HTTP_400_BAD_REQUEST)
+        if user == author:
+            return Response({"message": "You can`t unfollow yourself "},
+                            status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "You are not subscribed"},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, permission_classes=[permissions.IsAuthenticated],
             methods=['GET'])
@@ -51,4 +50,4 @@ class UserViewSet(UserViewSet):
             Subscription.objects.filter(user=user))
         serializer = SubscriptionSerializer(queryset, many=True,
                                             context={'request': request})
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
