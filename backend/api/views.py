@@ -56,7 +56,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def get_serializer_class(self):
-        if self.request.method == ['GET']:
+        if self.request.method == 'GET':
             return GetRecipeSerializer
         return RecipeSerializer
 

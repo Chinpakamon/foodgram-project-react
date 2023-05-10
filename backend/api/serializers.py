@@ -73,8 +73,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         model = Subscription
         fields = (
             'id', 'email', 'username', 'first_name', 'last_name',
-            'is_subscribed',
-            'recipes', 'recipes_count')
+            'is_subscribed', 'recipes', 'recipes_count')
 
     def get_is_subscribed(self, obj):
         return Subscription.objects.filter(user=obj.user,
@@ -135,9 +134,9 @@ class RecipeSerializer(serializers.ModelSerializer):
             'id', 'author', 'tags', 'ingredients', 'image', 'name', 'text',
             'cooking_time')
 
-    def create_update(self, data, model, recipe):
+    def create_update(self, datas, model, recipe):
         create_data = (model(recipe=recipe, ingredients=data['ingredient'],
-                             quantity=data['quantity']) for i in data)
+                             quantity=data['quantity']) for data in datas)
         model.objects.bulk_create(create_data)
 
     def create(self, validated_data):
@@ -174,6 +173,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients = self.initial_data.get('ingredients')
         ingredients_list = [ingredient['id'] for ingredient in ingredients]
         if len(ingredients_list) != len(set(ingredients_list)):
-            return serializers.ValidationError(
+            raise serializers.ValidationError(
                 'Which ingredient is listed more than once')
         return data

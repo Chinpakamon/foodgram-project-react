@@ -17,6 +17,7 @@ class IngredientsFilter(django_filters.FilterSet):
 
 class RecipesFilter(django_filters.FilterSet):
     tags = django_filters.ModelMultipleChoiceFilter(field_name='tags__slug',
+                                                    to_field_name='slug',
                                                     queryset=Tag.objects.all())
     author = django_filters.ModelChoiceFilter(queryset=User.objects.all())
 
