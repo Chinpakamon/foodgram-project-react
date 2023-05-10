@@ -135,7 +135,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             'cooking_time')
 
     def create_update(self, datas, model, recipe):
-        create_data = (model(recipe=recipe, ingredients=data['ingredient'],
+        create_data = (model(recipe=recipe, ingredient=data['ingredient'],
                              quantity=data['quantity']) for data in datas)
         model.objects.bulk_create(create_data)
 

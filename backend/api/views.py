@@ -24,6 +24,7 @@ from .serializers import (GetRecipeSerializer, IngredientSerializer,
 class TagViewSet(ViewSetMixin):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    pagination_class = None
     permission_classes = (permissions.AllowAny,)
 
 
@@ -31,6 +32,7 @@ class IngredientViewSet(ViewSetMixin):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filterset_class = IngredientsFilter
+    pagination_class = None
     permission_classes = (permissions.AllowAny,)
 
 
