@@ -6,7 +6,6 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from api.serializers import SubscriptionSerializer
-
 from .models import Subscription
 
 User = get_user_model()

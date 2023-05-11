@@ -45,7 +45,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 
 class IngredientQuantityAdmin(admin.ModelAdmin):
-    list_display = ('id', 'recipe', 'quantity', 'ingredient')
+    list_display = ('id', 'recipe', 'amount', 'ingredient')
     search_fields = ('recipe', 'ingredient',)
     list_filter = ('recipe', 'ingredient',)
     empty_value_display = '-пусто-'

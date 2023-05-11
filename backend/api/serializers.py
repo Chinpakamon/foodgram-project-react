@@ -26,12 +26,11 @@ class GetIngredientSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
-        source='ingredient.measurement_unit'
-    )
+        source='ingredient.measurement_unit')
 
     class Meta:
         model = IngredientQuantity
-        fields = ('id', 'name', 'measurement_unit', 'quantity')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
         validators = [
             UniqueTogetherValidator(queryset=IngredientQuantity.objects.all(),
                                     fields=['ingredient', 'recipe'])
@@ -40,13 +39,14 @@ class GetIngredientSerializer(serializers.ModelSerializer):
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     recipe = serializers.PrimaryKeyRelatedField(read_only=True)
-    quantity = serializers.IntegerField(write_only=True, min_value=1)
-    id = serializers.PrimaryKeyRelatedField(source='ingredient',
-                                            queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField(write_only=True, min_value=1)
+    id = serializers.PrimaryKeyRelatedField(
+        source='ingredient',
+        queryset=Ingredient.objects.all(), )
 
     class Meta:
         model = IngredientQuantity
-        fields = ('id', 'recipe', 'quantity')
+        fields = ('id', 'amount', 'recipe')
 
 
 class RecipeSubscribeSerializer(serializers.ModelSerializer):
@@ -114,8 +114,7 @@ class GetRecipeSerializer(serializers.ModelSerializer):
 
     def get_ingredients(self, obj):
         recipe_ingredients = IngredientQuantity.objects.filter(recipe=obj)
-        return GetIngredientSerializer(recipe_ingredients,
-                                       many=True).data
+        return GetIngredientSerializer(recipe_ingredients, many=True).data
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -134,7 +133,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def create_update(self, datas, model, recipe):
         create_data = (model(recipe=recipe, ingredient=data['ingredient'],
-                             quantity=data['quantity']) for data in datas)
+                             amount=data['amount']) for data in datas)
         model.objects.bulk_create(create_data)
 
     def create(self, validated_data):
