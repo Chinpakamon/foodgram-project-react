@@ -54,7 +54,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action != 'create':
-            return IsAuthorOrReadOnly
+            return (IsAuthorOrReadOnly(),)
         return super().get_permissions()
 
     def get_serializer_class(self):
@@ -80,7 +80,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     {"message": "Recipe already in favorites/Shopping List"},
                     status=status.HTTP_400_BAD_REQUEST)
             model.objects.get_or_create(user=request.user, recipe=recipe)
-            return Response(serializer(recipe).data, status=status.HTTP_201_CREATED)
+            return Response(serializer(recipe).data,
+                            status=status.HTTP_201_CREATED)
         if self.request.method == 'DELETE':
             recipe = get_object_or_404(Recipe, pk=pk)
             if model.objects.filter(user=request.user,
@@ -109,7 +110,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class ShoppingCartView(APIView):
     @action(methods=['GET'], detail=False, url_path='download_shopping_cart',
-            permission_classes=[permissions.IsAuthenticated])
+            permission_classes=[permissions.IsAuthenticated, ])
     def get(self, request):
         ingredients = IngredientQuantity.objects.filter(
             cart_user=self.request.user).values('ingredient__name',

@@ -21,7 +21,7 @@ class Tag(models.Model):
     name = models.CharField('Название тега', max_length=200, unique=True)
     color = models.CharField('Цвет', max_length=7, unique=True,
                              default='#FF0000')
-    slug = models.SlugField('Slug тега', max_length=200, unique=True)
+    slug = models.SlugField('slug', max_length=200, unique=True)
 
     class Meta:
         ordering = ('name',)
@@ -49,7 +49,7 @@ class Recipe(models.Model):
                                     db_index=True)
 
     class Meta:
-        ordering = ('-pub_date', )
+        ordering = ('-id', )
         verbose_name = 'Рецепт'
         constraints = [
             models.UniqueConstraint(
@@ -117,7 +117,7 @@ class IngredientQuantity(models.Model):
                                    on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['-id', ]
+        ordering = ('-id', )
         verbose_name = 'Количество ингредиента'
         constraints = [
             models.UniqueConstraint(

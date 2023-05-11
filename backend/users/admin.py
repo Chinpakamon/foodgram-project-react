@@ -5,15 +5,14 @@ from .models import Subscription, User
 
 class UserAdmin(admin.ModelAdmin):
     list_display = (
-        'pk', 'username', 'email', 'first_name', 'last_name', 'password')
+        'id', 'username', 'email', 'first_name', 'last_name', 'password')
     search_fields = ('username', 'first_name', 'last_name')
     list_filter = ('email', 'first_name')
-    ordering = ('id', )
     empty_value_display = '-пусто-'
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'user', 'author')
+    list_display = ('id', 'user', 'author')
     search_fields = ('user', 'author')
     list_filter = ('user', 'author')
     empty_value_display = '-пусто-'
