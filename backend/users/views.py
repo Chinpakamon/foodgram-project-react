@@ -44,9 +44,8 @@ class UserViewSet(UserViewSet):
     @action(detail=True, permission_classes=[permissions.IsAuthenticated],
             methods=['GET'])
     def subscriptions(self, request):
-        user = request.user
         queryset = self.paginate_queryset(
-            Subscription.objects.filter(user=user))
+            Subscription.objects.filter(user=request.user))
         serializer = SubscriptionSerializer(queryset, many=True,
-                                            context={'request': request})
-        return self.get_paginated_response(serializer.data)
+                                            context={'request': request}).data
+        return self.get_paginated_response(serializer)

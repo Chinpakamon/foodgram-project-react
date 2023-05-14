@@ -13,13 +13,13 @@ User = get_user_model()
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'color', 'slug')
+        fields = '__all__'
 
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit')
+        fields = '__all__'
 
 
 class GetIngredientSerializer(serializers.ModelSerializer):
@@ -102,19 +102,19 @@ class GetRecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         user = self.context['request'].user
-        if user.is_authenticated:
-            return obj.favorites.filter(user=user).exists()
-        return False
+        if user.is_anonymous:
+            return False
+        return obj.favorites.filter(user=user).exists()
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context['request'].user
-        if user.is_authenticated:
-            return obj.cart.filter(user=user).exists()
-        return False
+        if user.is_anonymous:
+            return False
+        return obj.cart.filter(user=user).exists()
 
     def get_ingredients(self, obj):
-        recipe_ingredients = IngredientQuantity.objects.filter(recipe=obj)
-        return GetIngredientSerializer(recipe_ingredients, many=True).data
+        ingredients = IngredientQuantity.objects.filter(recipe=obj)
+        return GetIngredientSerializer(ingredients, many=True).data
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -156,7 +156,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             self.create_update(ingredients_data, IngredientQuantity, instance)
         return super().update(instance, validated_data)
 
-    def represent(self, instance):
+    def to_representation(self, instance):
         self.fields.pop('ingredients')
         self.fields.pop('tags')
         represent = super().to_representation(instance)
