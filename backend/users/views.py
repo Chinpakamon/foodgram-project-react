@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
+from api.pagination import CustomPagination
 from api.serializers import SubscriptionSerializer
 from .models import Subscription
 
@@ -12,6 +13,8 @@ User = get_user_model()
 
 
 class UserViewSet(UserViewSet):
+    pagination_class = CustomPagination
+
     @action(detail=True, permission_classes=[permissions.IsAuthenticated],
             methods=['POST', 'DELETE'])
     def subscribe(self, request, id=None):
@@ -41,7 +44,7 @@ class UserViewSet(UserViewSet):
         return Response({"message": "You are not subscribed"},
                         status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=True, permission_classes=[permissions.IsAuthenticated],
+    @action(detail=False, permission_classes=[permissions.IsAuthenticated],
             methods=['GET'])
     def subscriptions(self, request):
         queryset = self.paginate_queryset(

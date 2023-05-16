@@ -24,7 +24,6 @@ from .serializers import (GetRecipeSerializer, IngredientSerializer,
 class TagViewSet(ViewSetMixin):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    pagination_class = None
     permission_classes = (permissions.AllowAny,)
 
 
@@ -32,7 +31,6 @@ class IngredientViewSet(ViewSetMixin):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filterset_class = IngredientsFilter
-    pagination_class = None
     permission_classes = (permissions.AllowAny,)
 
 
@@ -107,30 +105,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = RecipeSubscribeSerializer
         return self.post_delete(request, pk, model, serializer)
 
-
-class ShoppingCartView(APIView):
-    @action(methods=['GET'], detail=False, url_path='download_shopping_cart',
+    @action(detail=False, methods=('GET',),
             permission_classes=[permissions.IsAuthenticated, ])
-    def get(self, request):
-        ingredients = IngredientQuantity.objects.filter(
-            cart_user=self.request.user).values('ingredient__name',
-                                                'ingredient__measurement_unit'
-                                                ).ordered_by(
-            'ingredient_name').annotate(amount=Sum('quantity'))
-        user = get_object_or_404(User, username=request.user)
+    def download_shopping_cart(self, request):
+        user = request.user
         filename = f'{user.username}_shopping_list.txt'
         now = timezone.now()
-        shopping_list = (
+        shopping_list = [
             f'Список покупок для пользователя: {user.username}\n\n'
             f'Дата: {now:%Y-%m-%d}\n\n'
-        )
-        shopping_list += '\n'.join([
-            f'- {ingredient["ingredient__name"]} '
-            f'({ingredient["ingredient__measurement_unit"]})'
-            f' - {ingredient["amount"]}'
-            for ingredient in ingredients
-        ])
-        shopping_list += f'\n\nFoodgram ({now:%Y})'
+        ]
+        ingredients = IngredientQuantity.objects.filter(
+            recipe__cart__user=user).values('ingredient__name',
+                                            'ingredient__measurement_unit'
+                                            ).annotate(
+            ingredient_amount=Sum('amount'))
+
+        for ing in ingredients:
+            shopping_list.append(
+                f'{ing["ingredient__name"]}: {ing["ingredient_amount"]} {ing["ingredient__measurement_unit"]}'
+            )
         response = HttpResponse(
             shopping_list, content_type='text.txt; charset=utf-8'
         )
