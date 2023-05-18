@@ -77,17 +77,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
             model.objects.get_or_create(user=request.user, recipe=recipe)
             return Response(serializer(recipe).data,
                             status=status.HTTP_201_CREATED)
-        recipe = get_object_or_404(Recipe, pk=pk)
-        if model.objects.filter(user=request.user,
-                                recipe=recipe).exists():
-            data = get_object_or_404(model, user=request.user,
-                                     recipe=recipe)
-            data.delete()
-            return Response({"message": "Recipe/Cart removed"},
-                            status=status.HTTP_204_NO_CONTENT)
-        return Response(
-            {"message": "Recipe not in favorites/Shopping List"},
-            status=status.HTTP_400_BAD_REQUEST)
+        if self.request.method == 'DELETE':
+            recipe = get_object_or_404(Recipe, pk=pk)
+            if model.objects.filter(user=request.user,
+                                    recipe=recipe).exists():
+                data = get_object_or_404(model, user=request.user,
+                                         recipe=recipe)
+                data.delete()
+                return Response({"message": "Recipe/Cart removed"},
+                                status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {"message": "Recipe not in favorites/Shopping List"},
+                status=status.HTTP_400_BAD_REQUEST)
+        return 'Request method not in ["POST", "DELETE"]'
 
     @action(detail=True, methods=['POST', 'DELETE'])
     def favorite(self, request, pk):
