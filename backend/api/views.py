@@ -6,11 +6,9 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from recipes.models import (Favorite, Ingredient, IngredientQuantity, Recipe,
                             ShoppingCart, Tag)
-from users.models import User
 
 from .filters import IngredientsFilter, RecipesFilter
 from .mixins import ViewSetMixin
@@ -122,11 +120,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         for ing in ingredients:
             shopping_list.append(
-                f'{ing["ingredient__name"]}: {ing["ingredient_amount"]} {ing["ingredient__measurement_unit"]}'
+                f'{ing["ingredient__name"]}: {ing["ingredient_amount"]} '
+                f'{ing["ingredient__measurement_unit"]}'
             )
         response = HttpResponse(
             shopping_list, content_type='text.txt; charset=utf-8'
         )
         response['Content-Disposition'] = f'attachment; filename={filename}'
         return response
-
