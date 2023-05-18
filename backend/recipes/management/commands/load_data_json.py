@@ -1,4 +1,4 @@
-import json
+import csv
 
 from django.core.management.base import BaseCommand
 
@@ -6,17 +6,28 @@ from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
+    help = 'Импорт данных из csv в модель Ingredient'
+
     def add_arguments(self, parser):
-        parser.add_argument('json_file', type=str)
+        parser.add_argument('--path', type=str, help='Путь к файлу')
 
     def handle(self, *args, **options):
-        json_file = options['json_file']
-        Ingredient.objects.all().delete()
+        print('Заполнение модели Ingredient из csv запущено.')
+        file_path = options['path'] + 'ingredients.csv'
+        with open(file_path, 'r') as csv_file:
+            reader = csv.reader(csv_file)
 
-        with open(json_file, encoding='utf-8') as x:
-            data = json.load(x)
-        for ingredient in data:
-            Ingredient.objects.create(
-                name=ingredient['name'],
-                unit=ingredient['measurement_unit']
-            )
+            for row in reader:
+                try:
+                    obj, created = Ingredient.objects.get_or_create(
+                        name=row[0],
+                        measurement_unit=row[1],
+                    )
+                    if not created:
+                        print(
+                            f'Ингредиент {obj} уже существует в базе данных.'
+                        )
+                except Exception as error:
+                    print(f'Ошибка в строке {row}: {error}')
+
+        print('Заполнение модели Ingredient завершено.')
