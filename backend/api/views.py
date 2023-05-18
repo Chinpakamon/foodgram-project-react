@@ -77,6 +77,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             model.objects.get_or_create(user=request.user, recipe=recipe)
             return Response(serializer(recipe).data,
                             status=status.HTTP_201_CREATED)
+
         if self.request.method == 'DELETE':
             recipe = get_object_or_404(Recipe, pk=pk)
             if model.objects.filter(user=request.user,

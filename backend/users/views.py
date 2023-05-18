@@ -34,7 +34,7 @@ class UserViewSet(UserViewSet):
             return Response(serializer, status=status.HTTP_201_CREATED)
         if sub.exists():
             obj = get_object_or_404(Subscription, user=user,
-                                          author=author)
+                                    author=author)
             obj.delete()
             return Response({'message': 'You unsubscribed'},
                             status=status.HTTP_204_NO_CONTENT)
