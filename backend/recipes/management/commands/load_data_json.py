@@ -31,3 +31,4 @@ class Command(BaseCommand):
                     print(f'Ошибка в строке {row}: {error}')
 
         print('Заполнение модели Ingredient завершено.')
+        
