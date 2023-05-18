@@ -10,10 +10,7 @@ services:
       - ./.env
 
   backend:
-#    image: chinpakamon/diplom_back:v07.05.2023
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: chinpakamon/diplom_back:v18.05.2023
     restart: always
     volumes:
       - static_value:/app/static/
@@ -24,10 +21,7 @@ services:
       - ./.env
 
   frontend:
-#    image: chinpakamon/diplom_front:v07.05.2023
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: chinpakamon/diplom_front:v18.05.2023
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
