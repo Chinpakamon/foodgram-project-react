@@ -64,8 +64,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     def destroy(self, request, *args, **kwargs):
-        data = self.get_object()
-        self.perform_destroy(data)
+        self.perform_destroy(self.get_object())
         return Response({"message": "You deleted the recipe"},
                         status=status.HTTP_204_NO_CONTENT)
 

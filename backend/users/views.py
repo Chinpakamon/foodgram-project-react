@@ -23,25 +23,25 @@ class UserViewSet(UserViewSet):
         sub = Subscription.objects.filter(author=author, user=user)
         if self.request.method == 'POST':
             if user == author:
-                return Response({"message": "You can't subscribe to yourself"},
+                return Response({'message': 'You can`t subscribe to yourself'},
                                 status=status.HTTP_400_BAD_REQUEST)
             if sub.exists():
-                return Response({"message": "You are already subscribed"},
+                return Response({'message': 'You are already subscribed'},
                                 status=status.HTTP_400_BAD_REQUEST)
             serializer = SubscriptionSerializer(
                 Subscription.objects.create(user=user, author=author),
-                context={'request': request})
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        if Subscription.objects.filter(user=user, author=author).exists():
-            subscribe = get_object_or_404(Subscription, user=user,
+                context={'request': request}).data
+            return Response(serializer, status=status.HTTP_201_CREATED)
+        if sub.exists():
+            obj = get_object_or_404(Subscription, user=user,
                                           author=author)
-            subscribe.delete()
-            return Response({"message": "You unsubscribed"},
+            obj.delete()
+            return Response({'message': 'You unsubscribed'},
                             status=status.HTTP_204_NO_CONTENT)
         if user == author:
-            return Response({"message": "You can`t unfollow yourself "},
+            return Response({'message': 'You can`t unfollow yourself'},
                             status=status.HTTP_204_NO_CONTENT)
-        return Response({"message": "You are not subscribed"},
+        return Response({'message': 'You are not subscribed'},
                         status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, permission_classes=[permissions.IsAuthenticated],
