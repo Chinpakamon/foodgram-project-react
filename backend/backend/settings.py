@@ -12,8 +12,6 @@ SECRET_KEY = os.getenv('SECRET_KEY',
 
 DEBUG = False
 
-PAGE_SIZE = 6
-
 ALLOWED_HOSTS = ['158.160.39.177',
                  '127.0.0.1',
                  'localhost',
@@ -139,3 +137,5 @@ DJOSER = {
         'current_user': 'users.serializers.UserListSerializer',
     },
 }
+
+PAGE_SIZE = 6
