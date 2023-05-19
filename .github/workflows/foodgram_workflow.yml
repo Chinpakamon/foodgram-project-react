@@ -47,14 +47,14 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: chinpakamon/diplom_back:v07.05.2023
+          tags: chinpakamon/diplom_back:v19.05.2023
 
       - name: Push to DockerHub Front
         uses: docker/build-push-action@v2
         with:
           context: ./frontend
           push: true
-          tags: chinpakamon/diplom_front:v07.05.2023
+          tags: chinpakamon/diplom_front:v19.05.2023
 
 
   deploy:

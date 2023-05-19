@@ -10,7 +10,7 @@ services:
       - ./.env
 
   backend:
-    image: chinpakamon/diplom_back:v18.05.2023
+    image: chinpakamon/diplom_back:v19.05.2023
     restart: always
     volumes:
       - static_value:/app/static/
@@ -21,7 +21,7 @@ services:
       - ./.env
 
   frontend:
-    image: chinpakamon/diplom_front:v18.05.2023
+    image: chinpakamon/diplom_front:v19.05.2023
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
