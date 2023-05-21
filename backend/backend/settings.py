@@ -19,6 +19,8 @@ ALLOWED_HOSTS = ['158.160.39.177',
                  '*'
                  ]
 
+PAGE_SIZE = 6
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -144,5 +146,3 @@ DJOSER = {
         'current_user': 'users.serializers.UserListSerializer',
     },
 }
-
-PAGE_SIZE = 6
