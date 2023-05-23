@@ -10,6 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = (os.getenv('SECRET_KEY',
                         default='django-insecure-$n%8qq167*uxj-*yztnjy#x69qin53^9q+**y!)s%%1*60!nc7'))
 
+PAGE_SIZE = 6
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['158.160.39.177',
@@ -18,8 +20,6 @@ ALLOWED_HOSTS = ['158.160.39.177',
                  '0.0.0.0',
                  '*'
                  ]
-
-PAGE_SIZE = 6
 
 INSTALLED_APPS = [
     'django.contrib.admin',
