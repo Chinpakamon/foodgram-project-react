@@ -12,14 +12,14 @@ SECRET_KEY = (os.getenv('SECRET_KEY',
 
 DEBUG = True
 
+PAGE_SIZE = 6
+
 ALLOWED_HOSTS = ['158.160.39.177',
                  '127.0.0.1',
                  'localhost',
                  '0.0.0.0',
                  '*'
                  ]
-
-PAGE_SIZE = 6
 
 INSTALLED_APPS = [
     'django.contrib.admin',
