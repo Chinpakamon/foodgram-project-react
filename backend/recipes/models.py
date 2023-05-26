@@ -122,6 +122,6 @@ class IngredientQuantity(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['recipe', 'ingredient'],
-                name='recipes_ingredient',
+                name='recipes_ingredient_2',
             )
         ]
