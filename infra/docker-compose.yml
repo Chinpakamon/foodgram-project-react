@@ -3,6 +3,8 @@ version: '3.8'
 services:
   db:
     image: postgres:13.0-alpine
+    ports:
+      - "5432:5432"
     restart: always
     volumes:
       - ./database:/var/lib/postgresql/data/
@@ -10,7 +12,10 @@ services:
       - ./.env
 
   backend:
-    image: chinpakamon/diplom_back:v23.05.2023
+    image: chinpakamon/diplom_back:v26.05.2023
+#    build:
+#      context: ../backend
+#      dockerfile: Dockerfile
     restart: always
     volumes:
       - static_value:/app/static/
@@ -21,7 +26,10 @@ services:
       - ./.env
 
   frontend:
-    image: chinpakamon/diplom_front:v23.05.2023
+    image: chinpakamon/diplom_front:v26.05.2023
+#    build:
+#      context: ../frontend
+#      dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
